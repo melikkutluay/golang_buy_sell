@@ -1,0 +1,40 @@
+version: '3.3'
+volumes:
+  dm_postgres_data:
+     driver: local
+services:
+  dm_postgres:
+    container_name: postgres
+    image: postgres
+    volumes:
+      - dm_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+  dm_keycloak:
+    container_name: keycloak
+    image: jboss/keycloak
+    command: ["-Djboss.http.port=8088"]
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - DB_VENDOR=POSTGRES
+      - DB_ADDR=dm_postgres
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_SCHEMA=public
+      - DB_PASSWORD=password
+      - KEYCLOAK_LOGLEVEL=ALL
+      - PROXY_ADDRESS_FORWARDING=true
+    ports:
+      - "8088:8088"
+    restart: unless-stopped
+    volumes:
+      - ./standalone-ha.xml:/opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
+    depends_on:
+      - dm_postgres
+
+
