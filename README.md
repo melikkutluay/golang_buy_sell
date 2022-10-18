@@ -14,6 +14,7 @@ Please create metadata database in postgresql then import shared accounts_2022..
 go run .
 
 # Documentation
+ You can check api request and response body
  
 https://documenter.getpostman.com/view/14336225/2s847EQtxj
 
